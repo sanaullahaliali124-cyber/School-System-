@@ -11,6 +11,7 @@ import {
   Eye,
   Award,
   GraduationCap,
+  CreditCard,
   X,
   CheckCircle,
 } from 'lucide-react';
@@ -18,6 +19,7 @@ import { Student, SchoolClass } from '../../types';
 import { getData, saveData, STORAGE_KEYS, exportToCSV, exportToExcel } from '../../services/storage';
 import { StudentProfileModal } from './StudentProfileModal';
 import { StudentPromotionModal } from './StudentPromotionModal';
+import { StudentIDCardModal } from './StudentIDCardModal';
 import { ConfirmationModal } from '../common/ConfirmationModal';
 import { EmptyState } from '../common/EmptyState';
 import { useToast } from '../common/Toast';
@@ -43,6 +45,8 @@ export const StudentsView: React.FC = () => {
   const [showAddEditModal, setShowAddEditModal] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [showPromotionModal, setShowPromotionModal] = useState(false);
+  const [showBulkIdCardsModal, setShowBulkIdCardsModal] = useState(false);
+  const [selectedStudentForIdCard, setSelectedStudentForIdCard] = useState<Student | null>(null);
   const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
 
   // Form State
@@ -216,6 +220,13 @@ export const StudentsView: React.FC = () => {
             </>
           )}
           <button
+            onClick={() => setShowBulkIdCardsModal(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-indigo-200 bg-indigo-50 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition cursor-pointer shadow-2xs"
+            title="Generate and print official student ID cards"
+          >
+            <CreditCard className="w-3.5 h-3.5 text-indigo-600" /> Student ID Cards
+          </button>
+          <button
             onClick={handleExportExcel}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-emerald-300 bg-emerald-50 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition cursor-pointer shadow-2xs"
             title="Download formatted Excel spreadsheet (.xlsx)"
@@ -365,6 +376,13 @@ export const StudentsView: React.FC = () => {
                           title="View Profile"
                         >
                           <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setSelectedStudentForIdCard(st)}
+                          className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition cursor-pointer"
+                          title="Print Student ID Card"
+                        >
+                          <CreditCard className="w-4 h-4" />
                         </button>
                         {canManage('students') && (
                           <>
@@ -635,6 +653,17 @@ export const StudentsView: React.FC = () => {
         isOpen={showPromotionModal}
         onClose={() => setShowPromotionModal(false)}
         onPromoted={refreshStudents}
+      />
+
+      {/* Student ID Card Generator Modal */}
+      <StudentIDCardModal
+        students={filteredStudents}
+        isOpen={showBulkIdCardsModal || !!selectedStudentForIdCard}
+        singleStudent={selectedStudentForIdCard}
+        onClose={() => {
+          setShowBulkIdCardsModal(false);
+          setSelectedStudentForIdCard(null);
+        }}
       />
 
       {/* Delete Confirmation */}

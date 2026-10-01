@@ -38,6 +38,10 @@ You can switch between any of these accounts with **1-click** using the demo pil
    - Complete CRUD: Add, edit, delete, search, filter (class, gender, status).
    - Tabbed student profile modal (Bio, Attendance log, Fee ledger, Exam results, Homework, Documents).
    - Student Academic Promotion modal (batch promote students across grades).
+   - **Student Identity Cards Generator**:
+     - Official printable Front & Back Student ID Cards formatted for standard PVC/cardstock printing.
+     - Includes School Crest, Registration details, student photograph, full details, emergency contact, blood group badge, barcode, and principal signature stamp.
+     - Single student card printing + Bulk Class-wise ID card generator.
    - Structured Excel export (`.xlsx` using `xlsx` library with auto-fitted column widths), CSV export, and print view.
 
 4. **Faculty & Teachers**:

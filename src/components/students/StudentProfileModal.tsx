@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Student, StudentAttendanceRecord, FeePayment, ExamResult, Homework } from '../../types';
 import { getData, STORAGE_KEYS } from '../../services/storage';
+import { StudentIDCardModal } from './StudentIDCardModal';
 
 interface StudentProfileModalProps {
   student: Student | null;
@@ -30,6 +31,7 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
   onClose,
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'attendance' | 'fees' | 'exams' | 'homework' | 'docs'>('overview');
+  const [showIdCard, setShowIdCard] = useState(false);
 
   if (!isOpen || !student) return null;
 
@@ -71,6 +73,12 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowIdCard(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition cursor-pointer"
+            >
+              <CreditCard className="w-3.5 h-3.5 text-indigo-600" /> Print ID Card
+            </button>
             <button
               onClick={handlePrint}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer"
@@ -409,6 +417,14 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
           )}
         </div>
       </div>
+
+      {/* Student ID Card Modal */}
+      <StudentIDCardModal
+        students={[student]}
+        singleStudent={student}
+        isOpen={showIdCard}
+        onClose={() => setShowIdCard(false)}
+      />
     </div>
   );
 };

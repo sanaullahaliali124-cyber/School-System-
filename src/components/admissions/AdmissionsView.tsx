@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { UserPlus, CheckCircle, XCircle, Clock, Plus, Download, X, Award } from 'lucide-react';
+import { UserPlus, CheckCircle, XCircle, Clock, Plus, Download, FileSpreadsheet, X, Award } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { AdmissionApplication, Student, SchoolClass } from '../../types';
-import { getData, saveData, STORAGE_KEYS, exportToCSV } from '../../services/storage';
+import { getData, saveData, STORAGE_KEYS, exportToCSV, exportToExcel } from '../../services/storage';
 import { useToast } from '../common/Toast';
 import { useAuth } from '../../context/AuthContext';
 
@@ -127,6 +127,27 @@ export const AdmissionsView: React.FC = () => {
     showToast('Exported admissions to CSV');
   };
 
+  const handleExportExcel = () => {
+    const rows = filtered.map((a) => ({
+      'Application No': a.applicationNo,
+      'Student Name': a.studentName,
+      "Father's Name": a.fatherName,
+      "Mother's Name": a.motherName,
+      'Date of Birth': a.dob,
+      Gender: a.gender,
+      'Applying Class': a.applyingClass,
+      Phone: a.phone,
+      Email: a.email,
+      Address: a.address,
+      'Previous School': a.previousSchool,
+      'Application Date': a.applicationDate,
+      Status: a.status,
+      Notes: a.notes || '',
+    }));
+    exportToExcel('SMPS_Admissions_Registry', rows, 'Admissions');
+    showToast('Exported admissions registry to Excel (.xlsx)');
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Banner */}
@@ -155,6 +176,13 @@ export const AdmissionsView: React.FC = () => {
               <Plus className="w-4 h-4" /> New Application
             </button>
           )}
+          <button
+            onClick={handleExportExcel}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-emerald-300 bg-emerald-50 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition cursor-pointer shadow-2xs"
+            title="Download formatted Excel spreadsheet (.xlsx)"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" /> Export to Excel
+          </button>
           <button
             onClick={handleExportCSV}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer"

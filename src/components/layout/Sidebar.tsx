@@ -62,6 +62,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       title: 'Academics',
       items: [
         { id: 'students', label: 'Students', icon: GraduationCap, moduleKey: 'students' },
+        { id: 'id_cards', label: 'Student ID Cards', icon: CreditCard, moduleKey: 'students', badge: 'ID' },
         { id: 'teachers', label: 'Teachers', icon: Users, moduleKey: 'teachers' },
         { id: 'staff', label: 'Staff Directory', icon: UserCheck, moduleKey: 'staff' },
         { id: 'parents', label: 'Parents', icon: HeartHandshake, moduleKey: 'parents' },

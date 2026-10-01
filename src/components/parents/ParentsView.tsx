@@ -4,6 +4,7 @@ import {
   Plus,
   Search,
   Download,
+  FileSpreadsheet,
   Phone,
   Mail,
   MapPin,
@@ -12,7 +13,7 @@ import {
   Eye,
 } from 'lucide-react';
 import { Parent, Student } from '../../types';
-import { getData, saveData, STORAGE_KEYS, exportToCSV } from '../../services/storage';
+import { getData, saveData, STORAGE_KEYS, exportToCSV, exportToExcel } from '../../services/storage';
 import { useToast } from '../common/Toast';
 import { useAuth } from '../../context/AuthContext';
 
@@ -81,6 +82,21 @@ export const ParentsView: React.FC = () => {
     showToast('Exported parent list to CSV');
   };
 
+  const handleExportExcel = () => {
+    const rows = filteredParents.map((p) => ({
+      ID: p.id,
+      "Father's Name": p.fatherName,
+      "Mother's Name": p.motherName,
+      Phone: p.phone,
+      Email: p.email,
+      Occupation: p.occupation,
+      Address: p.address,
+      'Associated Children (Admission Nos)': p.childrenAdmissionNos.join(', '),
+    }));
+    exportToExcel('SMPS_Parents_Directory', rows, 'Parents');
+    showToast('Exported parents directory to Excel (.xlsx)');
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -106,6 +122,13 @@ export const ParentsView: React.FC = () => {
               <Plus className="w-4 h-4" /> Add Parent
             </button>
           )}
+          <button
+            onClick={handleExportExcel}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-emerald-300 bg-emerald-50 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition cursor-pointer shadow-2xs"
+            title="Download formatted Excel spreadsheet (.xlsx)"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" /> Export to Excel
+          </button>
           <button
             onClick={handleExportCSV}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer"

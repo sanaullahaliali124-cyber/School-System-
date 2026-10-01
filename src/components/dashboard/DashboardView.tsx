@@ -247,6 +247,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onNavigate }) => {
           {/* Quick Action Shortcuts */}
           <div className="flex flex-wrap items-center gap-2.5">
             <button
+              onClick={() => onNavigate('id_cards')}
+              className="inline-flex items-center gap-2 px-3.5 py-2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition cursor-pointer"
+              title="Generate and print official student ID cards"
+            >
+              <CreditCard className="w-4 h-4" /> Student ID Cards
+            </button>
+            <button
               onClick={() => onNavigate('students')}
               className="inline-flex items-center gap-2 px-3.5 py-2 bg-white text-indigo-900 hover:bg-indigo-50 font-bold text-xs rounded-xl shadow-xs transition cursor-pointer"
             >

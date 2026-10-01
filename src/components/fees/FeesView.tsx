@@ -5,6 +5,7 @@ import {
   Search,
   Filter,
   Download,
+  FileSpreadsheet,
   Printer,
   Clock,
   CheckCircle,
@@ -14,7 +15,7 @@ import {
   DollarSign,
 } from 'lucide-react';
 import { FeeStructure, FeePayment, Student, SchoolClass } from '../../types';
-import { getData, saveData, STORAGE_KEYS, exportToCSV } from '../../services/storage';
+import { getData, saveData, STORAGE_KEYS, exportToCSV, exportToExcel } from '../../services/storage';
 import { FeeReceiptModal } from './FeeReceiptModal';
 import { useToast } from '../common/Toast';
 import { useAuth } from '../../context/AuthContext';
@@ -145,6 +146,28 @@ export const FeesView: React.FC = () => {
     }));
     exportToCSV('SMPS_Fee_Payments_Report', rows);
     showToast('Exported fee payments to CSV');
+  };
+
+  const handleExportExcel = () => {
+    const rows = filteredPayments.map((p) => ({
+      Invoice: p.invoiceNo,
+      'Student Name': p.studentName,
+      'Admission No': p.admissionNo,
+      Class: p.class,
+      Section: p.section,
+      Month: p.month,
+      'Fee Particulars': p.feeType,
+      'Total Amount (PKR)': p.totalAmount,
+      'Scholarship/Discount (PKR)': p.discount,
+      'Paid Amount (PKR)': p.paidAmount,
+      'Remaining Due (PKR)': p.remainingAmount,
+      'Payment Method': p.paymentMethod,
+      'Receipt Date': p.paymentDate,
+      Status: p.status,
+      Remarks: p.remarks || '',
+    }));
+    exportToExcel('SMPS_Fee_Collections_Report', rows, 'Fee Payments');
+    showToast('Exported fee collection to Excel (.xlsx)');
   };
 
   return (
@@ -290,10 +313,18 @@ export const FeesView: React.FC = () => {
 
             <div className="flex items-center gap-2">
               <button
-                onClick={handleExportCSV}
-                className="w-full py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-1.5 cursor-pointer"
+                onClick={handleExportExcel}
+                className="w-full py-2 px-3 rounded-xl border border-emerald-300 bg-emerald-50 text-xs font-bold text-emerald-800 hover:bg-emerald-100 flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs whitespace-nowrap"
+                title="Download formatted Excel spreadsheet (.xlsx)"
               >
-                <Download className="w-3.5 h-3.5" /> Export
+                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" /> Export to Excel
+              </button>
+              <button
+                onClick={handleExportCSV}
+                className="py-2 px-3 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-1.5 cursor-pointer"
+                title="Export CSV"
+              >
+                <Download className="w-3.5 h-3.5" /> CSV
               </button>
             </div>
           </div>

@@ -224,6 +224,7 @@ export function checkPermission(
   module:
     | 'dashboard'
     | 'students'
+    | 'id_cards'
     | 'teachers'
     | 'staff'
     | 'parents'
@@ -250,6 +251,7 @@ export function checkPermission(
       return role === 'principal' ? 'full' : 'view';
 
     case 'students':
+    case 'id_cards':
       if (role === 'principal') return 'full';
       if (role === 'teacher') return 'assigned';
       if (role === 'accountant' || role === 'staff') return 'view';

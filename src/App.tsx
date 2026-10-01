@@ -9,6 +9,7 @@ import { GlobalSearchModal } from './components/common/GlobalSearchModal';
 import { LoginView } from './views/LoginView';
 import { DashboardView } from './components/dashboard/DashboardView';
 import { StudentsView } from './components/students/StudentsView';
+import { StudentIDCardsStudioView } from './components/students/StudentIDCardsStudioView';
 import { TeachersView } from './components/teachers/TeachersView';
 import { StaffView } from './components/staff/StaffView';
 import { ParentsView } from './components/parents/ParentsView';
@@ -49,6 +50,8 @@ const AppContent: React.FC = () => {
         return <DashboardView onNavigate={(mod) => setCurrentModule(mod)} />;
       case 'students':
         return <StudentsView />;
+      case 'id_cards':
+        return <StudentIDCardsStudioView />;
       case 'teachers':
         return <TeachersView />;
       case 'staff':

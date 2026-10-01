@@ -6,6 +6,7 @@ import {
   Plus,
   Printer,
   Download,
+  FileSpreadsheet,
   Eye,
   CheckCircle,
   Save,
@@ -27,6 +28,7 @@ import {
   STORAGE_KEYS,
   calculateGrade,
   exportToCSV,
+  exportToExcel,
 } from '../../services/storage';
 import { ReportCardModal } from './ReportCardModal';
 import { useToast } from '../common/Toast';
@@ -173,6 +175,24 @@ export const ExamsView: React.FC = () => {
     showToast('Exported results to CSV');
   };
 
+  const handleExportResultsExcel = () => {
+    const rows = results.map((r) => ({
+      Exam: r.examName,
+      'Student Name': r.studentName,
+      Class: r.class,
+      Section: r.section,
+      'Roll No': r.rollNo,
+      'Maximum Marks': r.totalMaxMarks,
+      'Obtained Marks': r.totalObtainedMarks,
+      'Percentage (%)': r.percentage,
+      Grade: r.overallGrade,
+      'Result Outcome': r.passed ? 'PASSED' : 'FAILED',
+      Remarks: r.remarks || '',
+    }));
+    exportToExcel('SMPS_Exam_Results_Registry', rows, 'Exam Results');
+    showToast('Exported examination results to Excel (.xlsx)');
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Banner */}
@@ -258,10 +278,17 @@ export const ExamsView: React.FC = () => {
 
             <div className="flex items-center gap-2">
               <button
+                onClick={handleExportResultsExcel}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-emerald-300 bg-emerald-50 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition cursor-pointer shadow-2xs"
+                title="Download formatted Excel spreadsheet (.xlsx)"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" /> Export to Excel
+              </button>
+              <button
                 onClick={handleExportResultsCSV}
                 className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-1.5 cursor-pointer"
               >
-                <Download className="w-3.5 h-3.5" /> Export Results
+                <Download className="w-3.5 h-3.5" /> Export CSV
               </button>
             </div>
           </div>

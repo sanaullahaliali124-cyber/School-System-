@@ -4,6 +4,7 @@ import {
   Plus,
   Search,
   Download,
+  FileSpreadsheet,
   Printer,
   Edit2,
   Trash2,
@@ -12,7 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import { Staff } from '../../types';
-import { getData, saveData, STORAGE_KEYS, exportToCSV } from '../../services/storage';
+import { getData, saveData, STORAGE_KEYS, exportToCSV, exportToExcel } from '../../services/storage';
 import { ConfirmationModal } from '../common/ConfirmationModal';
 import { EmptyState } from '../common/EmptyState';
 import { useToast } from '../common/Toast';
@@ -118,6 +119,22 @@ export const StaffView: React.FC = () => {
     showToast('Exported staff list to CSV');
   };
 
+  const handleExportExcel = () => {
+    const rows = filteredStaff.map((st) => ({
+      ID: st.id,
+      Name: st.name,
+      Position: st.position,
+      Phone: st.phone,
+      Email: st.email,
+      'Joining Date': st.joiningDate,
+      'Monthly Salary (PKR)': st.salary,
+      Status: st.status,
+      Address: st.address,
+    }));
+    exportToExcel('SMPS_Staff_Directory', rows, 'Staff');
+    showToast('Exported staff directory to Excel (.xlsx)');
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Banner */}
@@ -145,6 +162,13 @@ export const StaffView: React.FC = () => {
               <Plus className="w-4 h-4" /> Add Staff Member
             </button>
           )}
+          <button
+            onClick={handleExportExcel}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-emerald-300 bg-emerald-50 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition cursor-pointer shadow-2xs"
+            title="Download formatted Excel spreadsheet (.xlsx)"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" /> Export to Excel
+          </button>
           <button
             onClick={handleExportCSV}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
