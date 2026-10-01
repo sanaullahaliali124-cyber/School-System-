@@ -4,6 +4,7 @@ import {
   Plus,
   Search,
   Download,
+  FileSpreadsheet,
   Printer,
   Edit2,
   Trash2,
@@ -16,7 +17,7 @@ import {
   CheckCircle,
 } from 'lucide-react';
 import { Teacher } from '../../types';
-import { getData, saveData, STORAGE_KEYS, exportToCSV } from '../../services/storage';
+import { getData, saveData, STORAGE_KEYS, exportToCSV, exportToExcel } from '../../services/storage';
 import { ConfirmationModal } from '../common/ConfirmationModal';
 import { EmptyState } from '../common/EmptyState';
 import { useToast } from '../common/Toast';
@@ -138,6 +139,30 @@ export const TeachersView: React.FC = () => {
     showToast('Exported teachers directory to CSV');
   };
 
+  const handleExportExcel = () => {
+    const rows = filteredTeachers.map((t) => ({
+      ID: t.id,
+      Name: t.name,
+      "Father's Name": t.fatherName,
+      Gender: t.gender,
+      'Date of Birth': t.dob,
+      Designation: t.designation,
+      CNIC: t.cnic,
+      Phone: t.phone,
+      Email: t.email,
+      Qualification: t.qualification,
+      Experience: t.experience,
+      'Joining Date': t.joiningDate,
+      Subjects: t.assignedSubjects.join(', '),
+      Classes: t.assignedClasses.join(', '),
+      'Salary (PKR)': t.salary,
+      Address: t.address,
+      Status: t.status,
+    }));
+    exportToExcel('SMPS_Teachers_Directory', rows, 'Teachers');
+    showToast('Exported teachers directory to Excel (.xlsx)');
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Banner */}
@@ -165,6 +190,13 @@ export const TeachersView: React.FC = () => {
               <Plus className="w-4 h-4" /> Add Teacher
             </button>
           )}
+          <button
+            onClick={handleExportExcel}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-emerald-300 bg-emerald-50 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition cursor-pointer shadow-2xs"
+            title="Download formatted Excel spreadsheet (.xlsx)"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" /> Export to Excel
+          </button>
           <button
             onClick={handleExportCSV}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer"

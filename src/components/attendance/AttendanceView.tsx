@@ -6,6 +6,7 @@ import {
   Clock,
   Printer,
   Download,
+  FileSpreadsheet,
   Users,
   Save,
   Check,
@@ -20,7 +21,7 @@ import {
   TeacherAttendanceRecord,
   AttendanceStatus,
 } from '../../types';
-import { getData, saveData, STORAGE_KEYS, exportToCSV } from '../../services/storage';
+import { getData, saveData, STORAGE_KEYS, exportToCSV, exportToExcel } from '../../services/storage';
 import { useToast } from '../common/Toast';
 import { useAuth } from '../../context/AuthContext';
 
@@ -178,6 +179,35 @@ export const AttendanceView: React.FC = () => {
     showToast('Exported attendance to CSV');
   };
 
+  const handleExportAttendanceExcel = () => {
+    const rows = currentStudents.map((s) => ({
+      Date: selectedDate,
+      'Admission No': s.admissionNo,
+      'Full Name': s.fullName,
+      'Roll No': s.rollNo,
+      Class: s.class,
+      Section: s.section,
+      Status: getStudentStatus(s.id),
+      Remarks: attendanceRecords.find((a) => a.date === selectedDate && a.studentId === s.id)?.remark || '',
+    }));
+    exportToExcel(`SMPS_Attendance_${selectedClass}_${selectedSection}_${selectedDate}`, rows, 'Attendance');
+    showToast('Exported attendance sheet to Excel (.xlsx)');
+  };
+
+  const handleExportTeacherAttendanceExcel = () => {
+    const rows = teachers.map((tch) => ({
+      Date: selectedDate,
+      'Teacher ID': tch.id,
+      'Teacher Name': tch.name,
+      Designation: tch.designation,
+      Subjects: tch.assignedSubjects.join(', '),
+      Status: getTeacherStatus(tch.id),
+      Remark: teacherRecords.find((t) => t.date === selectedDate && t.teacherId === tch.id)?.remark || '',
+    }));
+    exportToExcel(`SMPS_Teacher_Attendance_${selectedDate}`, rows, 'Faculty Attendance');
+    showToast('Exported teacher attendance to Excel (.xlsx)');
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Banner */}
@@ -261,16 +291,23 @@ export const AttendanceView: React.FC = () => {
               </select>
             </div>
 
-            <div className="flex items-end gap-2">
+            <div className="flex flex-wrap items-end gap-2">
+              <button
+                onClick={handleExportAttendanceExcel}
+                className="flex-1 py-2 px-3 rounded-xl border border-emerald-300 bg-emerald-50 text-xs font-bold text-emerald-800 hover:bg-emerald-100 flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs whitespace-nowrap"
+                title="Download formatted Excel spreadsheet (.xlsx)"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" /> Export to Excel
+              </button>
               <button
                 onClick={handleExportAttendanceCSV}
-                className="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-1.5 cursor-pointer"
+                className="py-2 px-3 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" /> CSV
               </button>
               <button
                 onClick={() => window.print()}
-                className="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-1.5 cursor-pointer"
+                className="py-2 px-3 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Printer className="w-3.5 h-3.5" /> Print
               </button>
@@ -411,12 +448,21 @@ export const AttendanceView: React.FC = () => {
                 className="px-3 py-1.5 bg-slate-50 border rounded-xl text-xs font-semibold"
               />
             </div>
-            <button
-              onClick={() => showToast('Teacher attendance register updated!')}
-              className="px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-xs"
-            >
-              Save Faculty Register
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleExportTeacherAttendanceExcel}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-emerald-300 bg-emerald-50 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition cursor-pointer shadow-2xs"
+                title="Download formatted Excel spreadsheet (.xlsx)"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" /> Export to Excel
+              </button>
+              <button
+                onClick={() => showToast('Teacher attendance register updated!')}
+                className="px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-xs hover:bg-emerald-700 transition cursor-pointer"
+              >
+                Save Faculty Register
+              </button>
+            </div>
           </div>
 
           <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">

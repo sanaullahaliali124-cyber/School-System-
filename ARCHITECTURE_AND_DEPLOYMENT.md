@@ -38,11 +38,11 @@ You can switch between any of these accounts with **1-click** using the demo pil
    - Complete CRUD: Add, edit, delete, search, filter (class, gender, status).
    - Tabbed student profile modal (Bio, Attendance log, Fee ledger, Exam results, Homework, Documents).
    - Student Academic Promotion modal (batch promote students across grades).
-   - CSV export and print view.
+   - Structured Excel export (`.xlsx` using `xlsx` library with auto-fitted column widths), CSV export, and print view.
 
 4. **Faculty & Teachers**:
    - Full teacher profiles (Designation, CNIC, qualifications, assigned subjects, assigned classes, salary).
-   - Induct new teacher modal, profile view, search and filter.
+   - Induct new teacher modal, profile view, search, filter, and structured Excel export (`.xlsx`).
 
 5. **Support Staff**:
    - Directory for Accountant, Clerk, Librarian, Receptionist, Security, Lab Assistants.
@@ -61,6 +61,7 @@ You can switch between any of these accounts with **1-click** using the demo pil
    - One-click [Present] [Absent] [Leave] toggles.
    - "Mark All Present", "Mark All Absent", "Save Attendance".
    - Teacher attendance register ([Present], [Absent], [Leave], [Half Day]).
+   - Structured Excel export (`.xlsx`) for both Student and Teacher attendance registers.
    - Real-time progress bar.
 
 10. **Weekly Timetable Grid**:

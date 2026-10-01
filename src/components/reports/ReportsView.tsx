@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart3, Download, Printer, Filter, Users, CreditCard, Award, CalendarCheck } from 'lucide-react';
+import { BarChart3, Download, FileSpreadsheet, Printer, Filter, Users, CreditCard, Award, CalendarCheck } from 'lucide-react';
 import {
   Student,
   Teacher,
@@ -8,7 +8,7 @@ import {
   ExamResult,
   StudentAttendanceRecord,
 } from '../../types';
-import { getData, STORAGE_KEYS, exportToCSV } from '../../services/storage';
+import { getData, STORAGE_KEYS, exportToCSV, exportToExcel } from '../../services/storage';
 import { useToast } from '../common/Toast';
 
 export const ReportsView: React.FC = () => {
@@ -80,6 +80,65 @@ export const ReportsView: React.FC = () => {
     showToast('Report generated and exported to CSV!');
   };
 
+  const handleExportExcel = () => {
+    if (selectedReport === 'students') {
+      const rows = students.map((s) => ({
+        'Admission No': s.admissionNo,
+        'Full Name': s.fullName,
+        "Father's Name": s.fatherName,
+        Class: s.class,
+        Section: s.section,
+        'Roll No': s.rollNo,
+        Gender: s.gender,
+        Phone: s.phone,
+        Status: s.status,
+      }));
+      exportToExcel('SMPS_Students_Report', rows, 'Students');
+    } else if (selectedReport === 'fees') {
+      const rows = feePayments.map((f) => ({
+        'Invoice No': f.invoiceNo,
+        'Student Name': f.studentName,
+        Class: f.class,
+        Month: f.month,
+        'Total (PKR)': f.totalAmount,
+        'Discount (PKR)': f.discount,
+        'Paid (PKR)': f.paidAmount,
+        'Remaining (PKR)': f.remainingAmount,
+        Status: f.status,
+      }));
+      exportToExcel('SMPS_Fee_Collection_Report', rows, 'Fee Records');
+    } else if (selectedReport === 'exams') {
+      const rows = examResults.map((r) => ({
+        Exam: r.examName,
+        'Student Name': r.studentName,
+        Class: r.class,
+        'Total Marks': r.totalMaxMarks,
+        'Obtained Marks': r.totalObtainedMarks,
+        Percentage: `${r.percentage}%`,
+        Grade: r.overallGrade,
+        Passed: r.passed ? 'Yes' : 'No',
+      }));
+      exportToExcel('SMPS_Academic_Results_Report', rows, 'Exam Results');
+    } else if (selectedReport === 'attendance') {
+      const rows = attendance.map((a) => ({
+        Date: a.date,
+        'Student Name': a.studentName,
+        Class: a.class,
+        Section: a.section,
+        'Roll No': a.rollNo,
+        Status: a.status,
+      }));
+      exportToExcel('SMPS_Attendance_Report', rows, 'Attendance');
+    } else if (selectedReport === 'staff') {
+      const rows = [
+        ...teachers.map((t) => ({ Name: t.name, Department: 'Academic Faculty', Role: t.designation, Phone: t.phone, 'Salary (PKR)': t.salary })),
+        ...staff.map((s) => ({ Name: s.name, Department: 'Administration/Support', Role: s.position, Phone: s.phone, 'Salary (PKR)': s.salary })),
+      ];
+      exportToExcel('SMPS_Human_Resources_Report', rows, 'Faculty & Staff');
+    }
+    showToast('Report generated and exported to Excel (.xlsx)!');
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Banner */}
@@ -96,12 +155,19 @@ export const ReportsView: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={handleExportExcel}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition cursor-pointer"
+            title="Download formatted Excel spreadsheet (.xlsx)"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" /> Export to Excel
+          </button>
           <button
             onClick={handleExport}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5" /> Export Selected Report (CSV)
+            <Download className="w-3.5 h-3.5 text-slate-500" /> Export CSV
           </button>
           <button
             onClick={() => window.print()}

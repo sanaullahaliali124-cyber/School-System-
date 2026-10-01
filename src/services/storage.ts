@@ -331,6 +331,8 @@ export function checkPermission(
   }
 }
 
+import * as XLSX from 'xlsx';
+
 // CSV Export Helper
 export function exportToCSV(filename: string, rows: Record<string, any>[], headers?: string[]): void {
   if (!rows || !rows.length) {
@@ -367,3 +369,37 @@ export function exportToCSV(filename: string, rows: Record<string, any>[], heade
   link.click();
   document.body.removeChild(link);
 }
+
+// Structured Excel Export Helper using xlsx
+export function exportToExcel(
+  filename: string,
+  rows: Record<string, any>[],
+  sheetName: string = 'Records'
+): void {
+  if (!rows || !rows.length) {
+    alert('No data available to export.');
+    return;
+  }
+
+  try {
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+
+    // Auto-fit column widths
+    const columnWidths = Object.keys(rows[0]).map((key) => {
+      const maxLen = Math.max(
+        key.length,
+        ...rows.map((r) => String(r[key] ?? '').length)
+      );
+      return { wch: Math.min(Math.max(maxLen + 2, 10), 50) };
+    });
+    worksheet['!cols'] = columnWidths;
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+    XLSX.writeFile(workbook, `${filename}.xlsx`);
+  } catch (error) {
+    console.error('Error generating Excel spreadsheet:', error);
+    alert('Failed to export to Excel.');
+  }
+}
+
