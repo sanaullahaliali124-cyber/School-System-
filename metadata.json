@@ -1,0 +1,6 @@
+{
+  "name": "The Smart Modern Public School Qamber - Management System",
+  "description": "Comprehensive, modern School Management System ERP for The Smart Modern Public School Qamber, featuring student and teacher management, attendance, timetable, examinations, report cards, fees collection, admissions, notices, and role-based access.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
